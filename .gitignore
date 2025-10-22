@@ -1,0 +1,20 @@
+# Ignore build outputs
+/build
+/build/libs
+*.jar
+
+# Ignore IntelliJ IDEA files
+*.iml
+.idea/
+
+# Ignore Eclipse files
+.project
+.classpath
+.settings/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore sensitive configuration
+application.yml
