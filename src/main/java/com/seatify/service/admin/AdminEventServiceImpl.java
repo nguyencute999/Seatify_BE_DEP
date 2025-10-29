@@ -7,12 +7,14 @@ import com.seatify.model.Event;
 import com.seatify.model.User;
 import com.seatify.repository.EventRepository;
 import com.seatify.repository.UserRepository;
+import com.seatify.service.SeatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +22,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final SeatService seatService;
 
     @Override
     public EventResponseDTO getById(Long id) {
@@ -29,29 +32,45 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     @Override
+    @Transactional
     public EventResponseDTO create(EventRequestDTO dto) {
-        Event event = Event.builder()
-                .eventName(dto.getEventName())
-                .description(dto.getDescription())
-                .location(dto.getLocation())
-                .startTime(dto.getStartTime())
-                .endTime(dto.getEndTime())
-                .capacity(dto.getCapacity())
-                .status(dto.getStatus() != null ? dto.getStatus() : com.seatify.model.constants.EventStatus.UPCOMING)
-                .build();
+        try {
+            // Validate input data using DTO validation method
+            if (!dto.isValid()) {
+                throw new IllegalArgumentException("Dữ liệu sự kiện không hợp lệ");
+            }
 
-        // Handle thumbnail
-        if (dto.getThumbnail() != null && !dto.getThumbnail().isEmpty()) {
-            event.setThumbnail(dto.getThumbnail());
+            Event event = Event.builder()
+                    .eventName(dto.getEventName())
+                    .description(dto.getDescription())
+                    .location(dto.getLocation())
+                    .startTime(dto.getStartTime())
+                    .endTime(dto.getEndTime())
+                    .capacity(dto.getCapacity())
+                    .status(dto.getStatus() != null ? dto.getStatus() : com.seatify.model.constants.EventStatus.UPCOMING)
+                    .build();
+
+            // Handle thumbnail
+            if (dto.getThumbnail() != null && !dto.getThumbnail().isEmpty()) {
+                event.setThumbnail(dto.getThumbnail());
+            }
+
+            // Set created by - for now we'll leave it null as it's not required in the model
+            // In a real application, you would get the current user from security context
+            // User currentUser = getCurrentUser(); // Implement this method
+            // event.setCreatedBy(currentUser);
+
+            Event savedEvent = eventRepository.save(event);
+            
+            // Tự động sinh ghế cho sự kiện
+            if (dto.getSeatRows() != null && dto.getSeatsPerRow() != null) {
+                seatService.generateSeatsForEvent(savedEvent, dto.getSeatRows(), dto.getSeatsPerRow());
+            }
+            
+            return convertToResponseDTO(savedEvent);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi tạo sự kiện: " + e.getMessage(), e);
         }
-
-        // Set created by (you might need to get current user from security context)
-        // For now, we'll set it to null or get from a default admin user
-        // User currentUser = getCurrentUser(); // Implement this method
-        // event.setCreatedBy(currentUser);
-
-        Event savedEvent = eventRepository.save(event);
-        return convertToResponseDTO(savedEvent);
     }
 
     @Override

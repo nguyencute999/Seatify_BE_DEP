@@ -5,13 +5,17 @@ import com.seatify.dto.auth.ResponseWrapper;
 import com.seatify.dto.auth.UpdateUserRequest;
 import com.seatify.dto.auth.UserInfoResponse;
 import com.seatify.service.user.AuthService;
+import com.seatify.util.FileUploadUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final AuthService authService;
+    private final FileUploadUtil fileUploadUtil;
 
     @Operation(summary = "Lấy thông tin người dùng hiện tại")
     @GetMapping("/profile")
@@ -65,6 +70,87 @@ public class UserController {
                         .data("OK")
                         .build()
         );
+    }
+
+    @Operation(summary = "Upload ảnh đại diện")
+    @PostMapping(value = "/upload-avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseWrapper<String>> uploadAvatar(Authentication authentication,
+                                                               @RequestParam("file") MultipartFile file) {
+        try {
+            String email = authentication.getName();
+            String imageUrl = fileUploadUtil.uploadFile(file, "user-avatars");
+            
+            // Update user's avatar URL in database
+            authService.updateUserAvatar(email, imageUrl);
+            
+            return ResponseEntity.ok(
+                    ResponseWrapper.<String>builder()
+                            .status(HttpStatus.OK)
+                            .code(200)
+                            .message("Upload ảnh đại diện thành công")
+                            .data(imageUrl)
+                            .build()
+            );
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    ResponseWrapper.<String>builder()
+                            .status(HttpStatus.BAD_REQUEST)
+                            .code(400)
+                            .message("Lỗi khi upload ảnh: " + e.getMessage())
+                            .data(null)
+                            .build()
+            );
+        }
+    }
+
+    @Operation(summary = "Test Cloudinary connection")
+    @GetMapping("/test-cloudinary")
+    public ResponseEntity<ResponseWrapper<String>> testCloudinary() {
+        try {
+            // Test with a simple text file
+            String testContent = "Test file for Cloudinary connection";
+            byte[] testBytes = testContent.getBytes();
+            
+            org.springframework.web.multipart.MultipartFile testFile = new org.springframework.web.multipart.MultipartFile() {
+                @Override
+                public String getName() { return "test"; }
+                @Override
+                public String getOriginalFilename() { return "test.txt"; }
+                @Override
+                public String getContentType() { return "text/plain"; }
+                @Override
+                public boolean isEmpty() { return false; }
+                @Override
+                public long getSize() { return testBytes.length; }
+                @Override
+                public byte[] getBytes() throws IOException { return testBytes; }
+                @Override
+                public java.io.InputStream getInputStream() throws IOException { 
+                    return new java.io.ByteArrayInputStream(testBytes); 
+                }
+                @Override
+                public void transferTo(java.io.File dest) throws IOException, IllegalStateException {}
+            };
+            
+            String result = fileUploadUtil.uploadFile(testFile, "test");
+            return ResponseEntity.ok(
+                    ResponseWrapper.<String>builder()
+                            .status(HttpStatus.OK)
+                            .code(200)
+                            .message("Cloudinary connection successful")
+                            .data(result)
+                            .build()
+            );
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    ResponseWrapper.<String>builder()
+                            .status(HttpStatus.BAD_REQUEST)
+                            .code(400)
+                            .message("Cloudinary connection failed: " + e.getMessage())
+                            .data(null)
+                            .build()
+            );
+        }
     }
 }
 

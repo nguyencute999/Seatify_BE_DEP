@@ -10,6 +10,7 @@ public interface AuthService {
     User getUserByEmail(String email);
     void updateUserInfo(String email, UpdateUserRequest req);
     void changePassword(String email, ChangePasswordRequest req);
+    void updateUserAvatar(String email, String avatarUrl);
 
     String getGoogleRedirectUrl(jakarta.servlet.http.HttpServletRequest request);
     OAuth2ResponseDTO exchangeGoogleCodeForToken(String code, String redirectUri);

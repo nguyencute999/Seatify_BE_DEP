@@ -144,6 +144,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public void updateUserAvatar(String email, String avatarUrl) {
+        var user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setAvatarUrl(avatarUrl);
+        userRepo.save(user);
+    }
+
+    @Override
     public String getGoogleRedirectUrl(jakarta.servlet.http.HttpServletRequest request) {
         String scope = "openid%20email%20profile";
         String redirect = java.net.URLEncoder.encode(googleRedirectUri, java.nio.charset.StandardCharsets.UTF_8);

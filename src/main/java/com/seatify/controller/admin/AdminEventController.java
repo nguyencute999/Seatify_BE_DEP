@@ -3,12 +3,14 @@ package com.seatify.controller.admin;
 import com.seatify.dto.admin.request.EventRequestDTO;
 import com.seatify.dto.admin.response.EventResponseDTO;
 import com.seatify.service.admin.AdminEventService;
+import com.seatify.util.FileUploadUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/admin/events")
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminEventController {
 
     private final AdminEventService eventService;
+    private final FileUploadUtil fileUploadUtil;
 
     /**
      * Lấy sự kiện theo id
@@ -26,7 +29,7 @@ public class AdminEventController {
     }
 
     /**
-     * Tạo sự kiện
+     * Tạo sự kiện và tự động sinh ghế
      */
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EventResponseDTO> create(@Valid @RequestBody EventRequestDTO dto) {
@@ -67,5 +70,18 @@ public class AdminEventController {
             @RequestParam(defaultValue = "false") boolean desc
     ) {
         return ResponseEntity.ok(eventService.getAll(name, page, size, sortBy, desc));
+    }
+
+    /**
+     * Upload thumbnail image for event
+     */
+    @PostMapping(value = "/upload-thumbnail", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadThumbnail(@RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = fileUploadUtil.uploadFile(file, "event-thumbnails");
+            return ResponseEntity.ok(imageUrl);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to upload image: " + e.getMessage());
+        }
     }
 }

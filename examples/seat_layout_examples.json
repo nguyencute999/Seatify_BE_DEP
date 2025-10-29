@@ -1,0 +1,93 @@
+{
+  "examples": {
+    "theater_layout": {
+      "description": "Layout rạp hát với 3 hàng A, B, C, mỗi hàng 5 ghế",
+      "request": {
+        "eventId": 1,
+        "seats": [
+          {"seatRow": "A", "seatNumber": 1, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 2, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 3, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 4, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 5, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 1, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 2, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 3, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 4, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 5, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 1, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 2, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 3, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 4, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 5, "isAvailable": true}
+        ]
+      }
+    },
+    "conference_room": {
+      "description": "Layout phòng hội nghị với 2 hàng, mỗi hàng 10 ghế",
+      "request": {
+        "eventId": 2,
+        "seats": [
+          {"seatRow": "1", "seatNumber": 1, "isAvailable": true},
+          {"seatRow": "1", "seatNumber": 2, "isAvailable": true},
+          {"seatRow": "1", "seatNumber": 3, "isAvailable": true},
+          {"seatRow": "1", "seatNumber": 4, "isAvailable": true},
+          {"seatRow": "1", "seatNumber": 5, "isAvailable": true},
+          {"seatRow": "1", "seatNumber": 6, "isAvailable": true},
+          {"seatRow": "1", "seatNumber": 7, "isAvailable": true},
+          {"seatRow": "1", "seatNumber": 8, "isAvailable": true},
+          {"seatRow": "1", "seatNumber": 9, "isAvailable": true},
+          {"seatRow": "1", "seatNumber": 10, "isAvailable": true},
+          {"seatRow": "2", "seatNumber": 1, "isAvailable": true},
+          {"seatRow": "2", "seatNumber": 2, "isAvailable": true},
+          {"seatRow": "2", "seatNumber": 3, "isAvailable": true},
+          {"seatRow": "2", "seatNumber": 4, "isAvailable": true},
+          {"seatRow": "2", "seatNumber": 5, "isAvailable": true},
+          {"seatRow": "2", "seatNumber": 6, "isAvailable": true},
+          {"seatRow": "2", "seatNumber": 7, "isAvailable": true},
+          {"seatRow": "2", "seatNumber": 8, "isAvailable": true},
+          {"seatRow": "2", "seatNumber": 9, "isAvailable": true},
+          {"seatRow": "2", "seatNumber": 10, "isAvailable": true}
+        ]
+      }
+    },
+    "stadium_section": {
+      "description": "Layout một khu vực sân vận động với nhiều hàng",
+      "request": {
+        "eventId": 3,
+        "seats": [
+          {"seatRow": "A", "seatNumber": 1, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 2, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 3, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 4, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 5, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 6, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 7, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 8, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 9, "isAvailable": true},
+          {"seatRow": "A", "seatNumber": 10, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 1, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 2, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 3, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 4, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 5, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 6, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 7, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 8, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 9, "isAvailable": true},
+          {"seatRow": "B", "seatNumber": 10, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 1, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 2, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 3, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 4, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 5, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 6, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 7, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 8, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 9, "isAvailable": true},
+          {"seatRow": "C", "seatNumber": 10, "isAvailable": true}
+        ]
+      }
+    }
+  }
+}
