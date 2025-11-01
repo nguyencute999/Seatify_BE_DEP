@@ -3,6 +3,9 @@ package com.seatify.service.user;
 import com.seatify.dto.auth.*;
 import com.seatify.model.User;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 public interface AuthService {
     LoginResponse login(FormLogin form);
     void register(FormRegister form);

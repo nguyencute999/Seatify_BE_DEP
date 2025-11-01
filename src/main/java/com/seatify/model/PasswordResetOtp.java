@@ -9,6 +9,9 @@ import lombok.Setter;
 
 import java.time.Instant;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 @Entity
 @Table(name = "password_reset_otp")
 @Getter

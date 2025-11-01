@@ -38,6 +38,10 @@ public class News {
     @Builder.Default
     private LocalDateTime publishedAt = LocalDateTime.now();
 
+    @Column(name = "is_published", nullable = false)
+    @Builder.Default
+    private Boolean isPublished = false; // Trạng thái publish/unpublish
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;

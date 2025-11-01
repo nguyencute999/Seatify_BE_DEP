@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 @Entity
 @Table(name = "seats",
        uniqueConstraints = @UniqueConstraint(columnNames = {"event_id", "seat_row", "seat_number"}))

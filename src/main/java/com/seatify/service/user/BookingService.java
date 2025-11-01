@@ -7,6 +7,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.seatify.dto.user.request.UserBookingRequest;
 import com.seatify.dto.user.response.UserBookingResponse;
+import com.seatify.dto.user.response.UserAttendanceStatsResponse;
 import com.seatify.exception.ResourceNotFoundException;
 import com.seatify.exception.ValidationException;
 import com.seatify.model.Booking;
@@ -31,6 +32,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 @Service
 @RequiredArgsConstructor
 public class BookingService {
@@ -101,6 +105,22 @@ public class BookingService {
         return bookings.stream()
                 .map(this::convertToResponse)
                 .toList();
+    }
+
+    public UserAttendanceStatsResponse getUserAttendanceStats(Long userId) {
+        List<Booking> bookings = bookingRepository.findByUserId(userId);
+
+        long total = bookings.size();
+        long present = bookings.stream()
+                .filter(b -> b.getCheckInTime() != null)
+                .count();
+        long absent = total - present;
+
+        return UserAttendanceStatsResponse.builder()
+                .totalParticipated(total)
+                .presentCount(present)
+                .absentCount(absent)
+                .build();
     }
 
     public UserBookingResponse getBookingById(Long bookingId, Long userId) {
@@ -301,7 +321,11 @@ public class BookingService {
         return UserBookingResponse.builder()
                 .bookingId(booking.getBookingId())
                 .eventId(booking.getEvent().getEventId())
+                .eventName(booking.getEvent().getEventName())
                 .seatId(booking.getSeat().getSeatId())
+                .seatRow(booking.getSeat().getSeatRow())
+                .seatNumber(booking.getSeat().getSeatNumber())
+                .seatLabel(booking.getSeat().getSeatRow() + String.valueOf(booking.getSeat().getSeatNumber()))
                 .qrCode(booking.getQrCode()) // Now returns Cloudinary URL directly
                 .status(booking.getStatus())
                 .bookingTime(booking.getBookingTime())

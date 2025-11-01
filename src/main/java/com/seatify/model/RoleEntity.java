@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 @Entity
 @Table(name = "roles")
 @Data

@@ -8,6 +8,12 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO cho việc tạo hoặc cập nhật sự kiện trong hệ thống quản trị.
+ * Dùng để nhận dữ liệu từ client và xác thực đầu vào.
+ *
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 @Data
 public class EventRequestDTO {
     @NotBlank(message = "Tên sự kiện không được để trống")
@@ -39,8 +45,14 @@ public class EventRequestDTO {
     
     private EventStatus status;
     private String thumbnail;
-    
-    // Custom validation method
+
+    /**
+     * Kiểm tra tính hợp lệ của sự kiện:
+     * - Thời gian bắt đầu phải trước thời gian kết thúc.
+     * - Sức chứa phải bằng số hàng ghế * số ghế mỗi hàng.
+     *
+     * @return true nếu hợp lệ, false nếu sai điều kiện.
+     */
     public boolean isValid() {
         if (startTime != null && endTime != null && startTime.isAfter(endTime)) {
             return false;

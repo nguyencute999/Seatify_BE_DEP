@@ -5,6 +5,9 @@ import com.seatify.model.Event;
 
 import java.util.List;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 public interface SeatService {
     /**
      * Tạo ghế tự động cho sự kiện

@@ -4,6 +4,9 @@ import com.seatify.dto.auth.ForgotPasswordRequest;
 import com.seatify.dto.auth.ResetPasswordRequest;
 import com.seatify.dto.auth.ResetPasswordWithOtpRequest;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 public interface PasswordResetService {
     void processForgotPassword(ForgotPasswordRequest request);
     void resetPassword(ResetPasswordRequest request);

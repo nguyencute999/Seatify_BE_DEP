@@ -9,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 public interface SeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findByEvent(Event event);
     long countByEventAndIsAvailableTrue(Event event);

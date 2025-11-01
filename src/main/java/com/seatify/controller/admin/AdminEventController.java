@@ -12,16 +12,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Author: Lê Văn Nguyễn - CE181235
+ * Description: Controller admin quản lý sự kiện
+ * API CRUD và upload ảnh.
+ */
 @RestController
 @RequestMapping("/api/v1/admin/events")
 @RequiredArgsConstructor
 public class AdminEventController {
 
-    private final AdminEventService eventService;
-    private final FileUploadUtil fileUploadUtil;
+    private final AdminEventService eventService;//Xử lý nghiệp vụ cho sự kiện.
+    private final FileUploadUtil fileUploadUtil;// Hỗ trợ up file.
 
     /**
-     * Lấy sự kiện theo id
+     * Lấy thông tin sự kiện theo ID
+     *
+     * @param id ID của sự kiện cần lấy
+     * @return Thông tin sự kiện dạng EventResponseDTO
      */
     @GetMapping("/{id}")
     public ResponseEntity<EventResponseDTO> getById(@PathVariable Long id) {
@@ -29,7 +37,10 @@ public class AdminEventController {
     }
 
     /**
-     * Tạo sự kiện và tự động sinh ghế
+     * Tạo mới một sự kiện
+     *
+     * @param dto Dữ liệu đầu vào của sự kiện (EventRequestDTO)
+     * @return Thông tin sự kiện sau khi tạo thành công
      */
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EventResponseDTO> create(@Valid @RequestBody EventRequestDTO dto) {
@@ -37,7 +48,11 @@ public class AdminEventController {
     }
 
     /**
-     * cập nhật sự kiện
+     * Cập nhật thông tin một sự kiện theo ID
+     *
+     * @param id  ID của sự kiện cần cập nhật
+     * @param dto Dữ liệu cập nhật của sự kiện
+     * @return Thông tin sự kiện sau khi cập nhật
      */
     @PutMapping(value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EventResponseDTO> update(@PathVariable Long id, @Valid @RequestBody EventRequestDTO dto) {
@@ -45,7 +60,10 @@ public class AdminEventController {
     }
 
     /**
-     * xóa sự kện theo id
+     * Xóa sự kiện theo ID
+     *
+     * @param id ID của sự kiện cần xóa
+     * @return Thông báo xóa thành công
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
@@ -54,12 +72,14 @@ public class AdminEventController {
     }
 
     /**
-     * API lấy danh sách sự kiện có hỗ trợ tìm kiếm theo tên, phân trang, và sắp xếp
-     * @param name Từ khóa tìm kiếm theo tên
-     * @param page Số trang (bắt đầu từ 0)
-     * @param size Số lượng phần tử mỗi trang
-     * @param sortBy Thuộc tính để sắp xếp
-     * @param desc Có sắp xếp giảm dần
+     * Lấy danh sách tất cả sự kiện (có hỗ trợ tìm kiếm, phân trang, sắp xếp)
+     *
+     * @param name  Tên sự kiện cần tìm (mặc định rỗng nghĩa là lấy tất cả)
+     * @param page  Trang hiện tại (mặc định = 0)
+     * @param size  Số lượng phần tử mỗi trang (mặc định = 9999 để lấy tất cả)
+     * @param sortBy Thuộc tính dùng để sắp xếp (mặc định = eventId)
+     * @param desc  Có sắp xếp giảm dần hay không (mặc định = false)
+     * @return Trang dữ liệu (Page) chứa danh sách sự kiện
      */
     @GetMapping
     public ResponseEntity<Page<EventResponseDTO>> getAllEvents(
@@ -73,7 +93,10 @@ public class AdminEventController {
     }
 
     /**
-     * Upload thumbnail image for event
+     * Upload ảnh thumbnail cho sự kiện
+     *
+     * @param file File ảnh cần upload
+     * @return URL của ảnh sau khi upload thành công hoặc thông báo lỗi
      */
     @PostMapping(value = "/upload-thumbnail", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadThumbnail(@RequestParam("file") MultipartFile file) {

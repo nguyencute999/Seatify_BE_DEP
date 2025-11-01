@@ -11,7 +11,11 @@ import java.time.LocalDateTime;
 public class UserBookingResponse {
     private Long bookingId;
     private Long eventId;
+    private String eventName;
     private Long seatId;
+    private String seatRow;
+    private Integer seatNumber;
+    private String seatLabel;
     private String qrCode;
     private BookingStatus status;
     private LocalDateTime bookingTime;

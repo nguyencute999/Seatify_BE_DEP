@@ -14,14 +14,25 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+/**
+ * Author: Lê Văn Nguyễn - CE181235
+ * Description: Controller xử lý các chức năng xác thực người dùng (Authentication)
+ * Bao gồm: đăng nhập, đăng ký, đăng xuất, quên mật khẩu, reset mật khẩu và đăng nhập Google.
+ */
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
-    private final PasswordResetService passwordResetService;
+    private final AuthService authService;//xử lý login, register và auth
+    private final PasswordResetService passwordResetService;//xử lý cấp lại mk, otp
 
+    /**
+     * Đăng nhập tài khoản
+     *
+     * @param formLogin Dữ liệu đăng nhập gồm email và mật khẩu
+     * @return Thông tin phản hồi chứa token đăng nhập (JWT) hoặc lỗi
+     */
     @Operation(summary = "Đăng nhập tài khoản")
     @PostMapping("/login")
     public ResponseEntity<?> handleLogin(@Valid @RequestBody FormLogin formLogin) {
@@ -29,6 +40,12 @@ public class AuthController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    /**
+     * Đăng ký tài khoản mới
+     *
+     * @param formRegister Thông tin đăng ký gồm email, tên, mật khẩu,...
+     * @return Thông báo đăng ký thành công
+     */
     @Operation(summary = "Đăng ký tài khoản")
     @PostMapping("/register")
     public ResponseEntity<?> handleRegister(@Valid @RequestBody FormRegister formRegister) {
@@ -38,7 +55,11 @@ public class AuthController {
                         .status(HttpStatus.CREATED).code(201)
                         .data("Đăng ký tài khoản thành công").build());
     }
-
+    /**
+     * Đăng xuất tài khoản
+     *
+     * @return Thông báo đăng xuất thành công
+     */
     @Operation(summary = "Đăng xuất tài khoản")
     @PostMapping("/logout")
     public ResponseEntity<?> logout() {
@@ -52,6 +73,12 @@ public class AuthController {
 //        return ResponseEntity.ok("Vui lòng kiểm tra email để đặt lại mật khẩu.");
 //    }
 
+    /**
+     * Gửi mã OTP để đặt lại mật khẩu (quên mật khẩu)
+     *
+     * @param request Chứa email của người dùng cần đặt lại mật khẩu
+     * @return Thông báo đã gửi OTP qua email
+     */
     @Operation(summary = "Quên mật khẩu - gửi OTP qua email")
     @PostMapping("/forgot-password/otp")
     public ResponseEntity<?> forgotPasswordOtp(@Valid @RequestBody ForgotPasswordRequest request) {
@@ -66,6 +93,12 @@ public class AuthController {
 //        return ResponseEntity.ok("Mật khẩu đã được cập nhật thành công.");
 //    }
 
+    /**
+     * Đặt lại mật khẩu bằng OTP
+     *
+     * @param request Dữ liệu gồm email, OTP và mật khẩu mới
+     * @return Thông báo đặt lại mật khẩu thành công
+     */
     @Operation(summary = "Đặt lại mật khẩu bằng OTP")
     @PostMapping("/reset-password/otp")
     public ResponseEntity<?> resetPasswordWithOtp(@Valid @RequestBody ResetPasswordWithOtpRequest request) {
@@ -74,6 +107,12 @@ public class AuthController {
     }
 
 
+    /**
+     * Tạo URL chuyển hướng sang trang đăng nhập Google
+     *
+     * @param request Thông tin HTTP request hiện tại (để xác định URL)
+     * @return URL để frontend redirect sang Google login
+     */
     @GetMapping("/google-login")
     public ResponseEntity<?> redirectToGoogle(HttpServletRequest request) {
         String redirectUrl = authService.getGoogleRedirectUrl(request);
@@ -83,6 +122,12 @@ public class AuthController {
                 .data(new AuthRedirectResponse(redirectUrl)).build());
     }
 
+    /**
+     * Nhận mã code từ Google (sau khi người dùng xác thực) và đổi thành JWT
+     *
+     * @param request Chứa code và redirectUri nhận từ Google
+     * @return JWT token và thông tin người dùng
+     */
     @Operation(summary = "Nhận mã code từ Google và trả về JWT")
     @PostMapping("/google/code")
     public ResponseEntity<?> handleGoogleCode(@Valid @RequestBody OAuth2CodeRequestDTO request) {
@@ -98,6 +143,13 @@ public class AuthController {
         }
     }
 
+    /**
+     * Callback endpoint được Google gọi lại sau khi người dùng đăng nhập Google thành công
+     *
+     * @param code  Mã xác thực do Google cung cấp
+     * @param state (tuỳ chọn) giá trị trạng thái được gửi kèm (nếu có)
+     * @return Redirect đến frontend kèm token hoặc thông báo lỗi
+     */
     @Operation(summary = "Callback endpoint cho Google OAuth2")
     @GetMapping("/oauth2/callback/google")
     public ResponseEntity<?> handleGoogleCallback(@RequestParam("code") String code, 

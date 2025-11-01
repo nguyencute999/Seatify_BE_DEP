@@ -19,6 +19,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Random;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 @Service
 @RequiredArgsConstructor
 public class PasswordResetServiceImpl implements PasswordResetService {

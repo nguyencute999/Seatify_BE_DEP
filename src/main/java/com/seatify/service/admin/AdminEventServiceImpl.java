@@ -5,17 +5,26 @@ import com.seatify.dto.admin.response.EventResponseDTO;
 import com.seatify.exception.ResourceNotFoundException;
 import com.seatify.model.Event;
 import com.seatify.model.User;
+import com.seatify.model.constants.EventStatus;
 import com.seatify.repository.EventRepository;
 import com.seatify.repository.UserRepository;
+import com.seatify.repository.specification.EventSpecifications;
 import com.seatify.service.SeatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 @Service
 @RequiredArgsConstructor
 public class AdminEventServiceImpl implements AdminEventService {
@@ -106,17 +115,40 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public Page<EventResponseDTO> getAll(String name, int page, int size, String sortBy, boolean desc) {
+        return getAll(name, null, EventSpecifications.TimeFilter.ALL, page, size, sortBy, desc);
+    }
+
+    @Override
+    public Page<EventResponseDTO> getAll(String name, EventStatus status,
+                                         EventSpecifications.TimeFilter timeFilter,
+                                         int page, int size, String sortBy, boolean desc) {
         Sort sort = Sort.by(desc ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
-        
-        Page<Event> events;
-        if (name != null && !name.trim().isEmpty()) {
-            events = eventRepository.findByEventNameContainingIgnoreCase(name, pageable);
-        } else {
-            events = eventRepository.findAll(pageable);
-        }
-        
+
+        Specification<Event> spec = Specification.where(EventSpecifications.nameContains(name))
+                .and(EventSpecifications.hasStatus(status))
+                .and(EventSpecifications.timeFilter(timeFilter));
+
+        Page<Event> events = eventRepository.findAll(spec, pageable);
+
         return events.map(this::convertToResponseDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EventResponseDTO> getFeaturedEvents(int limit) {
+        LocalDateTime now = LocalDateTime.now();
+        Pageable pageable = PageRequest.of(0, limit);
+        
+        List<Event> featuredEvents = eventRepository.findFeaturedEventsByBookingCount(
+            EventStatus.UPCOMING, 
+            now, 
+            pageable
+        );
+        
+        return featuredEvents.stream()
+                .map(this::convertToResponseDTO)
+                .toList();
     }
 
     private EventResponseDTO convertToResponseDTO(Event event) {

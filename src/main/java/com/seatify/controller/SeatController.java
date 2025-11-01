@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Author: Lê Văn Nguyễn - CE181235
+ * Controller quản lý api liên quan đến ghế
+ */
 @RestController
 @RequestMapping("/api/v1/seats")
 @RequiredArgsConstructor
@@ -16,9 +20,10 @@ public class SeatController {
     private final SeatService seatService;
 
     /**
-     * Lấy danh sách ghế theo sự kiện
+     * Lấy danh sách ghế theo ID sự kiện
+     *
      * @param eventId ID của sự kiện
-     * @return Danh sách ghế
+     * @return Danh sách ghế thuộc sự kiện
      */
     @GetMapping("/event/{eventId}")
     public ResponseEntity<List<SeatResponseDTO>> getSeatsByEventId(@PathVariable Long eventId) {

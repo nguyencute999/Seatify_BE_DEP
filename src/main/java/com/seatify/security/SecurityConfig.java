@@ -17,6 +17,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -36,6 +39,9 @@ public class SecurityConfig {
                     "/api/v1/auth/**",
                    "/api/v1/admin/auth/**",
                     "/api/v1/events/**",
+                     "/api/v1/news/**",
+                     "/api/v1/attendance/**",  // Cho phép check-in/checkout public qrcode auth
+                        "/api/v1/user/comments/event/**",  // get comment public
                         "/login/**",
                         "/oauth2/**",
                         "/swagger-ui/**", "/v3/api-docs/**"

@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 @Entity
 @Table(name = "users")
 @Data

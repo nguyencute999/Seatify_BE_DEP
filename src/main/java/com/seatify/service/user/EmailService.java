@@ -10,6 +10,9 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.util.Base64;
 
+/**
+ * @author : Lê Văn Nguyễn - CE181235
+ */
 @Service
 @RequiredArgsConstructor
 public class EmailService {
